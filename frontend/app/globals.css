@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 223 47% 7%;
+  --foreground: 0 0% 98%;
+  --card: 224 45% 11%;
+  --card-foreground: 0 0% 98%;
+  --popover: 224 45% 11%;
+  --popover-foreground: 0 0% 98%;
+  --primary: 185 84% 56%;
+  --primary-foreground: 223 47% 8%;
+  --secondary: 224 29% 19%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 225 23% 20%;
+  --muted-foreground: 216 20% 75%;
+  --accent: 188 94% 42%;
+  --accent-foreground: 223 47% 8%;
+  --destructive: 0 65% 50%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 222 22% 27%;
+  --input: 222 22% 27%;
+  --ring: 185 84% 56%;
+  --radius: 0.8rem;
+  --font-primary: var(--font-coral-primary);
+  --font-secondary: var(--font-coral-secondary);
+  --color-fondo: hsl(var(--background));
+  --color-tinta: hsl(var(--foreground));
+  --color-acento: hsl(var(--accent));
+}
+
+* {
+  @apply border-border;
+}
+
+html,
+body {
+  @apply min-h-full;
+}
+
+body {
+  @apply bg-fondo text-tinta font-secondary bg-halo-coral;
+}

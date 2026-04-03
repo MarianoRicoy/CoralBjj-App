@@ -1,0 +1,29 @@
+{
+  "name": "coral-bjj-backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/server.js",
+    "typeorm:sync": "tsx src/scripts/sync-schema.ts",
+    "seed": "tsx src/scripts/seed.ts"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "pg": "^8.16.3",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^0.3.27",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^4.17.23",
+    "@types/node": "^20.19.17",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
