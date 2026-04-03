@@ -1,4 +1,7 @@
+import { randomUUID } from "node:crypto";
+
 import {
+  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -46,4 +49,11 @@ export class ItemOrdenEntity {
   })
   @JoinColumn({ name: "ordenId" })
   orden!: OrdenEntity;
+
+  @BeforeInsert()
+  ensureId() {
+    if (!this.id) {
+      this.id = randomUUID();
+    }
+  }
 }

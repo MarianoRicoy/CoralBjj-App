@@ -5,6 +5,7 @@
   "scripts": {
     "dev:frontend": "npm run dev --prefix frontend",
     "dev:backend": "npm run dev --prefix backend",
+    "dev:clean": "bash scripts/dev-clean.sh",
     "build:frontend": "npm run build --prefix frontend",
     "build:backend": "npm run build --prefix backend",
     "lint:frontend": "npm run lint --prefix frontend"

@@ -1,4 +1,6 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { randomUUID } from "node:crypto";
+
+import { BeforeInsert, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: "WebhookPago" })
 export class WebhookPagoEntity {
@@ -19,4 +21,11 @@ export class WebhookPagoEntity {
 
   @CreateDateColumn({ type: "timestamptz" })
   creadoEn!: Date;
+
+  @BeforeInsert()
+  ensureId() {
+    if (!this.id) {
+      this.id = randomUUID();
+    }
+  }
 }

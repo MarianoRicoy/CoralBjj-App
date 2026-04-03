@@ -1,4 +1,8 @@
+import { randomUUID } from "node:crypto";
+
 import {
+  BeforeInsert,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
@@ -59,4 +63,24 @@ export class OrdenEntity {
 
   @OneToMany(() => ItemOrdenEntity, (item) => item.orden, { cascade: true })
   items!: ItemOrdenEntity[];
+
+  @BeforeInsert()
+  ensureInsertValues() {
+    if (!this.id) {
+      this.id = randomUUID();
+    }
+
+    if (!this.creadoEn) {
+      this.creadoEn = new Date();
+    }
+
+    if (!this.actualizadoEn) {
+      this.actualizadoEn = new Date();
+    }
+  }
+
+  @BeforeUpdate()
+  touchUpdatedAt() {
+    this.actualizadoEn = new Date();
+  }
 }
