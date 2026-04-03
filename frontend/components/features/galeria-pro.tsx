@@ -8,7 +8,7 @@ import { FOTOS_GALERIA, PLACEHOLDER_BASE64 } from "@/lib/media";
 export function GaleriaPro() {
   return (
     <section aria-labelledby="galeria" className="space-y-6">
-      <div className="space-y-2">
+      <div className="space-y-2 text-center">
         <h2 id="galeria" className="text-3xl font-primary text-white md:text-4xl">
           Galería Pro
         </h2>

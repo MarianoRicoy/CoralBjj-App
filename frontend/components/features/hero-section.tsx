@@ -9,24 +9,36 @@ import { PLACEHOLDER_BASE64 } from "@/lib/media";
 
 const FOTOS_HOME = [
   {
-    src: "/images/home/Coral Bjj Estudio 16.2.2025-26.jpg",
-    alt: "Clase de jiu-jitsu en Coral BJJ Studio",
+    src: "/images/home/FotoCarrousel01.jpg",
+    alt: "Foto principal del carrusel Coral BJJ 01",
   },
   {
-    src: "/images/home/Coral Bjj Estudio 16.2.2025-34.jpg",
-    alt: "Entrenamiento técnico en tatami",
+    src: "/images/home/FotoCarrousel02.jpeg",
+    alt: "Foto del carrusel Coral BJJ 02",
   },
   {
-    src: "/images/home/IMG_9694.jpeg",
-    alt: "Comunidad entrenando en Coral BJJ",
+    src: "/images/home/FotoCarrousel03.jpeg",
+    alt: "Foto del carrusel Coral BJJ 03",
   },
   {
-    src: "/images/home/IMG_9696.jpeg",
-    alt: "Clase grupal en la academia",
+    src: "/images/home/FotoCarrousel04.jpg",
+    alt: "Foto del carrusel Coral BJJ 04",
   },
   {
-    src: "/images/home/IMG_9876.jpeg",
-    alt: "Profesor guiando técnica en el estudio",
+    src: "/images/home/FotoCarrousel05.jpg",
+    alt: "Foto del carrusel Coral BJJ 05",
+  },
+  {
+    src: "/images/home/FotoCarrousel06.jpeg",
+    alt: "Foto del carrusel Coral BJJ 06",
+  },
+  {
+    src: "/images/home/FotoCarrousel07.jpeg",
+    alt: "Foto del carrusel Coral BJJ 07",
+  },
+  {
+    src: "/images/home/FotoCarrousel08.jpeg",
+    alt: "Foto del carrusel Coral BJJ 08",
   },
 ];
 
@@ -52,7 +64,7 @@ export function HeroSection() {
   }
 
   return (
-    <section className="relative min-h-[78vh] overflow-hidden rounded-3xl border border-white/10">
+    <section className="relative min-h-[60vh] overflow-hidden rounded-3xl border border-white/10 md:min-h-[66vh]">
       <div className="absolute inset-0">
         {FOTOS_HOME.map((foto, index) => (
           <div
@@ -97,19 +109,13 @@ export function HeroSection() {
       </div>
 
       <motion.div
-        className="relative z-10 flex min-h-[78vh] flex-col justify-end gap-5 p-8 md:p-14"
+        className="relative z-10 flex min-h-[60vh] flex-col justify-end gap-5 p-8 md:min-h-[66vh] md:p-14"
         initial={{ opacity: 0, y: 24 }}
         transition={{ duration: 0.7, ease: "easeOut" }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
       >
-        <span className="max-w-max rounded-full border border-cyan-300/50 bg-cyan-300/10 px-3 py-1 text-xs tracking-[0.2em] text-cyan-200 uppercase">
-          Academia Premium de Brazilian Jiu-Jitsu
-        </span>
-        <h1 className="max-w-4xl text-4xl leading-tight font-primary text-white md:text-7xl">
-          Técnica, cultura y alto rendimiento en el corazón de Coral BJJ Studio.
-        </h1>
-        <p className="max-w-2xl text-base text-zinc-200 md:text-lg">
+        <p className="max-w-3xl text-lg text-zinc-100 md:text-2xl">
           Formamos atletas y personas con una metodología clara: disciplina, detalle y comunidad.
         </p>
 

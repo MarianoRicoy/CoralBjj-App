@@ -25,6 +25,7 @@
   --radius: 0.8rem;
   --font-primary: var(--font-coral-primary);
   --font-secondary: var(--font-coral-secondary);
+  --font-tertiary: var(--font-coral-tertiary);
   --color-fondo: hsl(var(--background));
   --color-tinta: hsl(var(--foreground));
   --color-acento: hsl(var(--accent));
@@ -40,5 +41,16 @@ body {
 }
 
 body {
-  @apply bg-fondo text-tinta font-secondary bg-halo-coral;
+  @apply text-tinta;
+  background-color: #090909;
+  background-image:
+    linear-gradient(rgba(8, 8, 8, 0.56), rgba(8, 8, 8, 0.56)),
+    linear-gradient(rgba(10, 10, 10, 0.16), rgba(10, 10, 10, 0.16)),
+    url("/backgrounds/coral-bg-texture.png"),
+    url("/backgrounds/coral-bg-photo.jpeg");
+  background-position: center, center, center, center;
+  background-repeat: no-repeat, no-repeat, repeat, no-repeat;
+  background-size: cover, cover, 920px auto, cover;
+  background-attachment: fixed, fixed, fixed, fixed;
+  background-blend-mode: normal, normal, soft-light, normal;
 }

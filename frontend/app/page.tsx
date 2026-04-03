@@ -13,12 +13,17 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function Home() {
   return (
-    <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-14 px-4 py-6 md:px-8 md:py-10">
-      <HeroSection />
-      <HorariosGrid />
-      <GaleriaPro />
-      <TiendaSection />
-      <FormulariosSection />
-    </main>
+    <>
+      <section className="w-full px-3 py-4 md:px-6 md:py-6">
+        <HeroSection />
+      </section>
+
+      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-14 px-4 py-6 md:px-8 md:py-10">
+        <HorariosGrid />
+        <GaleriaPro />
+        <TiendaSection />
+        <FormulariosSection />
+      </main>
+    </>
   );
 }

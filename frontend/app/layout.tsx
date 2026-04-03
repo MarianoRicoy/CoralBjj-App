@@ -17,6 +17,12 @@ const coralSecondary = localFont({
   display: "swap",
 });
 
+const coralTertiary = localFont({
+  src: "../public/fonts/Satoshi-Light.otf",
+  variable: "--font-coral-tertiary",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: {
     default: "Coral BJJ Studio",
@@ -34,7 +40,7 @@ export default function RootLayout({
   return (
     <html
       lang="es-AR"
-      className={`${coralPrimary.variable} ${coralSecondary.variable} h-full antialiased`}
+      className={`${coralPrimary.variable} ${coralSecondary.variable} ${coralTertiary.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-secondary">
         <SiteNavbar />

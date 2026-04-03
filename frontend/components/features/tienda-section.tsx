@@ -39,8 +39,8 @@ export function TiendaSection() {
 
   return (
     <section aria-labelledby="tienda" className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div className="space-y-2">
+      <div className="flex flex-col items-center gap-3">
+        <div className="space-y-2 text-center">
           <h2 id="tienda" className="text-3xl font-primary text-white md:text-4xl">
             Tienda oficial
           </h2>
@@ -48,7 +48,7 @@ export function TiendaSection() {
             Equipamiento seleccionado para entrenar con estilo y rendimiento.
           </p>
         </div>
-        <p className="rounded-full border border-cyan-300/40 bg-cyan-300/10 px-4 py-2 text-sm text-cyan-100">
+        <p className="inline-flex h-11 items-center rounded-md border border-white/70 bg-black/30 px-5 text-xs font-tertiary tracking-[0.08em] text-zinc-100 uppercase">
           Carrito activo: {totalItems} items
         </p>
       </div>

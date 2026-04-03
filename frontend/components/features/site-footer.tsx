@@ -46,7 +46,7 @@ export function SiteFooter() {
             <li>Instagram: @coralbjjstudio</li>
           </ul>
           <Link
-            className="inline-flex rounded-full border border-cyan-300/40 bg-cyan-300/10 px-4 py-2 text-sm text-cyan-100 transition-colors hover:bg-cyan-300/20"
+            className="inline-flex h-11 items-center justify-center rounded-md border border-white/70 bg-black/30 px-6 text-sm font-tertiary font-medium tracking-[0.08em] text-zinc-100 uppercase transition-all duration-200 hover:-translate-y-0.5 hover:border-white hover:bg-white/10"
             href="/#formularios"
           >
             Reservar clase
