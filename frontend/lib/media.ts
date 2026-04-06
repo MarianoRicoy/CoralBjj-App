@@ -4,23 +4,23 @@ export const PLACEHOLDER_BASE64 =
 export const FOTOS_GALERIA = [
   {
     id: "foto-1",
-    src: "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=1600&q=80",
-    alt: "Entrenamiento técnico en tatami principal",
+    src: "/galeriaHome/Coral%20Bjj%20Estudio%2016.2.2025-111.jpg",
+    alt: "Entrenamiento en Coral BJJ Studio",
   },
   {
     id: "foto-2",
-    src: "https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=1600&q=80",
-    alt: "Sesión de drilling con instructor",
+    src: "/galeriaHome/Coral%20Bjj%20Estudio%2016.2.2025-122.jpg",
+    alt: "Clase técnica en Coral BJJ Studio",
   },
   {
     id: "foto-3",
-    src: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1600&q=80",
-    alt: "Clase grupal de jiujitsu brasileño",
+    src: "/galeriaHome/IMG_9989.jpeg",
+    alt: "Comunidad entrenando en Coral BJJ",
   },
   {
     id: "foto-4",
-    src: "https://images.unsplash.com/photo-1549570652-97324981a6fd?auto=format&fit=crop&w=1600&q=80",
-    alt: "Competidor ajustando su kimono antes de entrenar",
+    src: "/galeriaHome/nicocalavera2.jpeg",
+    alt: "Detalle visual del estudio Coral BJJ",
   },
 ];
 

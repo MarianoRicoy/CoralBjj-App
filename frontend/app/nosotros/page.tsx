@@ -13,7 +13,7 @@ export default function NosotrosPage() {
     <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-10 px-4 py-8 md:px-8 md:py-12">
       <section className="grid items-center gap-8 md:grid-cols-2">
         <div className="space-y-4">
-          <p className="inline-flex rounded-full border border-cyan-300/40 bg-cyan-300/10 px-3 py-1 text-xs tracking-[0.2em] text-cyan-100 uppercase">
+          <p className="inline-flex rounded-full border border-white/35 bg-white/10 px-3 py-1 text-xs tracking-[0.2em] text-zinc-100 uppercase">
             Sobre nosotros
           </p>
           <h1 className="text-4xl leading-tight font-primary text-white md:text-6xl">

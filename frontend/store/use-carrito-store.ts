@@ -6,6 +6,8 @@ interface CarritoState {
   items: ItemCarrito[];
   agregarItem: (producto: Producto, varianteId: string, cantidad?: number) => void;
   quitarItem: (productoId: string, varianteId: string) => void;
+  incrementarCantidad: (productoId: string, varianteId: string, stockMaximo: number) => void;
+  decrementarCantidad: (productoId: string, varianteId: string) => void;
   limpiarCarrito: () => void;
   totalItems: () => number;
   totalMonto: () => number;
@@ -59,6 +61,40 @@ export const useCarritoStore = create<CarritoState>((set, get) => ({
       items: state.items.filter(
         (item) => item.productoId !== productoId || item.varianteId !== varianteId,
       ),
+    }));
+  },
+  incrementarCantidad: (productoId, varianteId, stockMaximo) => {
+    set((state) => ({
+      items: state.items.map((item) => {
+        if (item.productoId === productoId && item.varianteId === varianteId) {
+          return {
+            ...item,
+            cantidad: Math.min(item.cantidad + 1, stockMaximo),
+          };
+        }
+
+        return item;
+      }),
+    }));
+  },
+  decrementarCantidad: (productoId, varianteId) => {
+    set((state) => ({
+      items: state.items.flatMap((item) => {
+        if (item.productoId !== productoId || item.varianteId !== varianteId) {
+          return [item];
+        }
+
+        if (item.cantidad <= 1) {
+          return [];
+        }
+
+        return [
+          {
+            ...item,
+            cantidad: item.cantidad - 1,
+          },
+        ];
+      }),
     }));
   },
   limpiarCarrito: () => set({ items: [] }),

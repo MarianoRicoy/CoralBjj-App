@@ -13,6 +13,7 @@ module.exports = {
         primary: ["var(--font-primary)", "sans-serif"],
         secondary: ["var(--font-secondary)", "sans-serif"],
         tertiary: ["var(--font-tertiary)", "sans-serif"],
+        coralbold: ["var(--font-bold)", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",

@@ -65,7 +65,7 @@ export function FormulariosSection() {
               <p className="text-xs text-red-300">{contactoForm.formState.errors.mensaje?.message}</p>
             </div>
             <Button type="submit">Enviar consulta</Button>
-            {mensajeContacto ? <p className="text-sm text-cyan-100">{mensajeContacto}</p> : null}
+            {mensajeContacto ? <p className="text-sm text-zinc-100">{mensajeContacto}</p> : null}
           </form>
         </CardContent>
       </Card>

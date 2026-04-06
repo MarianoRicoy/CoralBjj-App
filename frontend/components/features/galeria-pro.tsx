@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 
 import { FOTOS_GALERIA, PLACEHOLDER_BASE64 } from "@/lib/media";
 
@@ -10,10 +11,12 @@ export function GaleriaPro() {
     <section aria-labelledby="galeria" className="space-y-6">
       <div className="space-y-2 text-center">
         <h2 id="galeria" className="text-3xl font-primary text-white md:text-4xl">
-          Galería Pro
+          <Link className="transition-colors hover:text-[#f2685d]" href="/galeria">
+            Galería Coral
+          </Link>
         </h2>
         <p className="text-sm text-zinc-400 md:text-base">
-          El estudio, la energía y la comunidad en una experiencia visual de alto nivel.
+          Nuestra historia, la energía del estudio y la comunidad que da vida a Coral BJJ.
         </p>
       </div>
 

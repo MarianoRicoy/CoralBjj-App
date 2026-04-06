@@ -30,7 +30,7 @@ export function HorariosGrid() {
             <div className="space-y-2 text-sm text-zinc-200 md:text-base">
               {grupo.bloques.map((bloque) => (
                 <p key={bloque.id}>
-                  <span className="font-semibold text-cyan-100">{bloque.hora}</span> {bloque.clase}
+                  <span className="font-semibold text-zinc-100">{bloque.hora}</span> {bloque.clase}
                 </p>
               ))}
             </div>

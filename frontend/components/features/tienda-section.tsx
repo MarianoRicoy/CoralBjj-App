@@ -1,48 +1,43 @@
 "use client";
 
-import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { PLACEHOLDER_BASE64 } from "@/lib/media";
+import { obtenerProductosTiendaIniciales, precioARS } from "@/lib/tienda-productos";
 import { useCarrito } from "@/hooks/use-carrito";
-import { obtenerProductos, obtenerProductosDesdeApi } from "@/services/productos.service";
-import type { Producto } from "@/types/producto";
-
-function precioARS(valor: number): string {
-  return new Intl.NumberFormat("es-AR", {
-    style: "currency",
-    currency: "ARS",
-    maximumFractionDigits: 0,
-  }).format(valor);
-}
 
 export function TiendaSection() {
   const { agregarItem, totalItems } = useCarrito();
-  const [productos, setProductos] = useState<Producto[]>(obtenerProductos());
+  const productos = obtenerProductosTiendaIniciales();
+  const [productoAgregadoId, setProductoAgregadoId] = useState<string | null>(null);
 
-  useEffect(() => {
-    let activo = true;
+  const agregarProducto = (productoId: string, varianteId: string) => {
+    const producto = productos.find((item) => item.id === productoId);
 
-    void obtenerProductosDesdeApi().then((resultado) => {
-      if (activo) {
-        setProductos(resultado);
-      }
-    });
+    if (!producto) {
+      return;
+    }
 
-    return () => {
-      activo = false;
-    };
-  }, []);
+    agregarItem(producto, varianteId);
+    setProductoAgregadoId(productoId);
+
+    setTimeout(() => {
+      setProductoAgregadoId((actual) => (actual === productoId ? null : actual));
+    }, 1800);
+  };
 
   return (
     <section aria-labelledby="tienda" className="space-y-6">
       <div className="flex flex-col items-center gap-3">
         <div className="space-y-2 text-center">
           <h2 id="tienda" className="text-3xl font-primary text-white md:text-4xl">
-            Tienda oficial
+            <Link className="transition-colors hover:text-[#f2685d]" href="/tienda">
+              Tienda oficial
+            </Link>
           </h2>
           <p className="text-sm text-zinc-400 md:text-base">
             Equipamiento seleccionado para entrenar con estilo y rendimiento.
@@ -57,34 +52,52 @@ export function TiendaSection() {
         {productos.map((producto) => (
           <Card key={producto.id} className="overflow-hidden border-white/10 bg-zinc-900/70">
             <CardHeader className="space-y-3 p-0">
-              <div className="relative h-56 w-full">
+              <Link className="group relative block h-56 w-full bg-zinc-950/80" href={`/tienda/${producto.slug}`}>
                 <Image
                   alt={producto.nombre}
                   blurDataURL={PLACEHOLDER_BASE64}
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-contain p-4 transition-transform duration-500 group-hover:scale-[1.02]"
                   fill
                   placeholder="blur"
                   sizes="(max-width: 1024px) 100vw, 33vw"
                   src={producto.imagen}
                 />
-              </div>
+              </Link>
               <div className="px-5">
-                <CardTitle className="text-xl text-white">{producto.nombre}</CardTitle>
+                <CardTitle className="text-xl text-white">
+                  <Link className="transition-colors hover:text-[#f2685d]" href={`/tienda/${producto.slug}`}>
+                    {producto.nombre}
+                  </Link>
+                </CardTitle>
               </div>
             </CardHeader>
             <CardContent className="space-y-3 px-5">
               <p className="text-sm text-zinc-300">{producto.descripcion}</p>
-              <p className="text-xl font-secondary text-cyan-100">{precioARS(producto.precioBase)}</p>
+              <p className="text-xl font-secondary text-zinc-100">{precioARS(producto.precioBase)}</p>
             </CardContent>
             <CardFooter className="px-5 pb-5">
-              <Button
-                className="w-full gap-2"
-                onClick={() => agregarItem(producto, producto.variantes[0].id)}
-                type="button"
-              >
-                <ShoppingCart className="h-4 w-4" />
-                Agregar al carrito
-              </Button>
+              <div className="w-full space-y-2">
+                <Button
+                  className="w-full gap-2"
+                  onClick={() => agregarProducto(producto.id, producto.variantes[0].id)}
+                  type="button"
+                >
+                  <Image
+                    alt="Carrito"
+                    className="h-4 w-4 brightness-0 invert"
+                    height={128}
+                    src="/icons/custom/coral_cart_skull@128.png"
+                    width={128}
+                  />
+                  Agregar al carrito
+                </Button>
+
+                {productoAgregadoId === producto.id ? (
+                  <p className="feedback-message text-xs font-medium tracking-[0.08em] text-[#f2685d] uppercase">
+                    Producto agregado
+                  </p>
+                ) : null}
+              </div>
             </CardFooter>
           </Card>
         ))}

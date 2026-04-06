@@ -125,7 +125,7 @@ export function HeroSection() {
               key={foto.src}
               aria-label={`Ir al slide ${index + 1}`}
               className={`h-2.5 rounded-full transition-all ${
-                slideActivo === index ? "w-7 bg-cyan-200" : "w-2.5 bg-white/50"
+                slideActivo === index ? "w-7 bg-white" : "w-2.5 bg-white/50"
               }`}
               onClick={() => setSlideActivo(index)}
               type="button"

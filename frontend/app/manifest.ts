@@ -8,8 +8,8 @@ export default function manifest(): MetadataRoute.Manifest {
       "Academia premium de Brazilian Jiu-Jitsu con landing informativa, tienda online y experiencia optimizada.",
     start_url: "/",
     display: "standalone",
-    background_color: "#0a101c",
-    theme_color: "#0ea5b7",
+    background_color: "#090909",
+    theme_color: "#f2f2f2",
     lang: "es-AR",
     icons: [
       {
