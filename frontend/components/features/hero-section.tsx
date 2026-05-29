@@ -9,7 +9,7 @@ import { PLACEHOLDER_BASE64 } from "@/lib/media";
 
 const FOTOS_HOME = [
   {
-    src: "/images/home/FotoCarrousel01.jpg",
+    src: "/images/home/FotoCarrousel01.jpeg",
     alt: "Foto principal del carrusel Coral BJJ 01",
   },
   {
@@ -21,12 +21,13 @@ const FOTOS_HOME = [
     alt: "Foto del carrusel Coral BJJ 03",
   },
   {
-    src: "/images/home/FotoCarrousel04.jpg",
+    src: "/images/home/FotoCarrousel04.jpeg",
     alt: "Foto del carrusel Coral BJJ 04",
   },
   {
-    src: "/images/home/FotoCarrousel05.jpg",
+    src: "/images/home/FotoCarrousel05.jpeg",
     alt: "Foto del carrusel Coral BJJ 05",
+    position: "top",
   },
   {
     src: "/images/home/FotoCarrousel06.jpeg",
@@ -64,7 +65,7 @@ export function HeroSection() {
   }
 
   return (
-    <section className="relative min-h-[60vh] overflow-hidden rounded-3xl border border-white/10 md:min-h-[66vh]">
+    <section className="relative h-[100svh] w-full overflow-hidden">
       <div className="absolute inset-0">
         {FOTOS_HOME.map((foto, index) => (
           <div
@@ -76,7 +77,7 @@ export function HeroSection() {
             <Image
               alt={foto.alt}
               blurDataURL={PLACEHOLDER_BASE64}
-              className="h-full w-full object-cover"
+              className={`h-full w-full object-cover ${foto.position === "top" ? "object-top" : ""}`}
               fill
               placeholder="blur"
               priority={index === 0}
@@ -109,7 +110,7 @@ export function HeroSection() {
       </div>
 
       <motion.div
-        className="relative z-10 flex min-h-[60vh] flex-col justify-end gap-5 p-8 md:min-h-[66vh] md:p-14"
+        className="relative z-10 flex h-[100svh] flex-col justify-end gap-5 p-8 md:p-14"
         initial={{ opacity: 0, y: 24 }}
         transition={{ duration: 0.7, ease: "easeOut" }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -119,7 +120,7 @@ export function HeroSection() {
           Formamos atletas y personas con una metodología clara: disciplina, detalle y comunidad.
         </p>
 
-        <div className="mt-2 flex items-center gap-2">
+        <div className="mt-4 flex items-center gap-2">
           {FOTOS_HOME.map((foto, index) => (
             <button
               key={foto.src}

@@ -14,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function Home() {
   return (
     <>
-      <section className="w-full px-3 py-4 md:px-6 md:py-6">
+      <section className="w-full">
         <HeroSection />
       </section>
 
