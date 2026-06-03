@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 
-import { CoralMarquee } from "@/components/features/coral-marquee";
-import { SiteFooter } from "@/components/features/site-footer";
-import { SiteNavbar } from "@/components/features/site-navbar";
+import { SiteChrome } from "@/components/features/site-chrome";
 
 const coralPrimary = localFont({
   src: "../public/fonts/Psyche-Wide-Regular.otf",
@@ -50,10 +48,7 @@ export default function RootLayout({
       className={`${coralPrimary.variable} ${coralSecondary.variable} ${coralTertiary.variable} ${coralBold.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-secondary">
-        <SiteNavbar />
-        {children}
-        <CoralMarquee />
-        <SiteFooter />
+        <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   );
