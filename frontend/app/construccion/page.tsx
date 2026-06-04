@@ -8,18 +8,15 @@ export const metadata: Metadata = {
 
 export default function ConstruccionPage() {
   return (
-    <main className="flex min-h-screen w-full flex-col items-center justify-center gap-8 bg-black px-6">
+    <main className="flex min-h-screen w-full flex-col items-center justify-center bg-black px-6">
       <Image
-        alt="Coral BJJ Studio"
-        className="h-40 w-auto md:h-56"
-        height={512}
+        alt="Coral BJJ Studio - Under Construction"
+        className="h-auto w-full max-w-2xl"
+        height={670}
         priority
-        src="/Isologo_Blanco.png"
-        width={512}
+        src="/under-construction.png"
+        width={1600}
       />
-      <p className="font-primary text-center text-xl uppercase tracking-[0.3em] text-white md:text-3xl">
-        Under Construction
-      </p>
     </main>
   );
 }

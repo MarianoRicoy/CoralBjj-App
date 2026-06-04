@@ -35,6 +35,12 @@ export const metadata: Metadata = {
   },
   description:
     "Academia premium de Brazilian Jiu-Jitsu con propuesta técnica de alto nivel y tienda oficial.",
+  icons: {
+    icon: [
+      { url: "/icon-light.png", media: "(prefers-color-scheme: light)" },
+      { url: "/icon-dark.png", media: "(prefers-color-scheme: dark)" },
+    ],
+  },
 };
 
 export default function RootLayout({
