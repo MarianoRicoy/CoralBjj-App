@@ -28,6 +28,12 @@ const coralBold = localFont({
   display: "swap",
 });
 
+const coralTitulos = localFont({
+  src: "../public/fonts/Jurighi-Regular.ttf",
+  variable: "--font-coral-titulos",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: {
     default: "Coral BJJ Studio",
@@ -51,7 +57,7 @@ export default function RootLayout({
   return (
     <html
       lang="es-AR"
-      className={`${coralPrimary.variable} ${coralSecondary.variable} ${coralTertiary.variable} ${coralBold.variable} h-full antialiased`}
+      className={`${coralPrimary.variable} ${coralSecondary.variable} ${coralTertiary.variable} ${coralBold.variable} ${coralTitulos.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-secondary">
         <SiteChrome>{children}</SiteChrome>

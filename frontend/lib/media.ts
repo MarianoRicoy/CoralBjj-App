@@ -22,6 +22,16 @@ export const FOTOS_GALERIA = [
     src: "/galeriaHome/nicocalavera2.jpeg",
     alt: "Detalle visual del estudio Coral BJJ",
   },
+  {
+    id: "foto-5",
+    src: "/galeriaHome/WhatsApp%20Image%202026-05-17%20at%2015.33.47.jpeg",
+    alt: "Momento en Coral BJJ Studio",
+  },
+  {
+    id: "foto-6",
+    src: "/galeriaHome/WhatsApp%20Image%202026-05-17%20at%2015.33.49.jpeg",
+    alt: "Momento en Coral BJJ Studio",
+  },
 ];
 
 export const VIDEO_HERO = {

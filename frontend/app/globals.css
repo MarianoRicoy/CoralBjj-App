@@ -27,6 +27,7 @@
   --font-secondary: var(--font-coral-secondary);
   --font-tertiary: var(--font-coral-tertiary);
   --font-bold: var(--font-coral-bold);
+  --font-titulos: var(--font-coral-titulos);
   --color-fondo: hsl(var(--background));
   --color-tinta: hsl(var(--foreground));
   --color-acento: hsl(var(--accent));

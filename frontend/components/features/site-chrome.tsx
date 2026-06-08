@@ -11,6 +11,7 @@ const RUTAS_SIN_CHROME = ["/construccion"];
 export function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const ocultarChrome = RUTAS_SIN_CHROME.includes(pathname);
+  const esHome = pathname === "/";
 
   if (ocultarChrome) {
     return <>{children}</>;
@@ -19,8 +20,8 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
   return (
     <>
       <SiteNavbar />
-      {children}
-      <CoralMarquee />
+      {esHome ? children : <div className="pt-32 md:pt-40">{children}</div>}
+      {esHome ? <CoralMarquee /> : null}
       <SiteFooter />
     </>
   );

@@ -12,7 +12,7 @@ export function GaleriaPro() {
       <div className="space-y-2 text-center">
         <h2 id="galeria" className="text-3xl font-primary text-white md:text-4xl">
           <Link className="transition-colors hover:text-[#f2685d]" href="/galeria">
-            Galería Coral
+            Galería de fotos
           </Link>
         </h2>
         <p className="text-sm text-zinc-400 md:text-base">

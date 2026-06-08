@@ -88,7 +88,7 @@ export function HeroSection() {
         ))}
       </div>
 
-      <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/55 to-black/25" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/20 to-black/10" />
 
       <div className="absolute right-4 bottom-4 z-20 flex items-center gap-2 md:right-6 md:bottom-6">
         <button
