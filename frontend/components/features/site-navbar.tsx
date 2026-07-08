@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 
 const LINKS_HOME = [
   { label: "Nosotros", href: "/nosotros" },
+  { label: "Embajadores", href: "/embajadores" },
+  { label: "Staff Coral", href: "/staff-coral" },
   { label: "Horarios", href: "/#horarios" },
   { label: "Galería", href: "/galeria" },
   { label: "Tienda", href: "/tienda" },
@@ -90,7 +92,17 @@ export function SiteNavbar() {
             onClick={() => setMenuAbierto((prev) => !prev)}
             type="button"
           >
-            {menuAbierto ? <X className="h-9 w-9" /> : <BonesIcon className="h-16 w-16" />}
+            {menuAbierto ? (
+              <X className="h-9 w-9" />
+            ) : (
+              <Image
+                alt="Menú"
+                className="h-16 w-16 object-contain"
+                height={64}
+                src="/menu-huesos-white.png"
+                width={64}
+              />
+            )}
           </button>
 
           <Link
@@ -121,39 +133,5 @@ export function SiteNavbar() {
         </div>
       ) : null}
     </header>
-  );
-}
-
-function BonesIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      aria-hidden="true"
-      className={className}
-      fill="currentColor"
-      viewBox="0 0 64 64"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <g transform="rotate(-4 32 15)">
-        <circle cx="14" cy="11" r="5.2" />
-        <circle cx="14" cy="19" r="5.2" />
-        <circle cx="50" cy="11" r="5.2" />
-        <circle cx="50" cy="19" r="5.2" />
-        <rect x="13" y="11.5" width="38" height="7" rx="3.5" />
-      </g>
-      <g transform="rotate(3 32 32)">
-        <circle cx="14" cy="28" r="5.2" />
-        <circle cx="14" cy="36" r="5.2" />
-        <circle cx="50" cy="28" r="5.2" />
-        <circle cx="50" cy="36" r="5.2" />
-        <rect x="13" y="28.5" width="38" height="7" rx="3.5" />
-      </g>
-      <g transform="rotate(-2 32 49)">
-        <circle cx="14" cy="45" r="5.2" />
-        <circle cx="14" cy="53" r="5.2" />
-        <circle cx="50" cy="45" r="5.2" />
-        <circle cx="50" cy="53" r="5.2" />
-        <rect x="13" y="45.5" width="38" height="7" rx="3.5" />
-      </g>
-    </svg>
   );
 }
