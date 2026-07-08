@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useCarrito } from "@/hooks/use-carrito";
 import { obtenerProductosTiendaIniciales, precioARS } from "@/lib/tienda-productos";
+import { iniciarCheckout } from "@/services/checkout.service";
 
 function obtenerStockMaximo(productoId: string, varianteId: string): number {
   const productos = obtenerProductosTiendaIniciales();
@@ -27,6 +28,34 @@ export function CarritoView() {
     limpiarCarrito,
   } = useCarrito();
   const [mensajeEliminadoVisible, setMensajeEliminadoVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleCheckout = async () => {
+    if (items.length === 0) return;
+    setLoading(true);
+    try {
+      const payloadMock = {
+        nombreCompleto: "Consumidor Final",
+        email: "correo@correo.com",
+        telefono: "1122334455",
+        direccion: "Dirección de Prueba 123",
+        ciudad: "CABA",
+        provincia: "Buenos Aires",
+        codigoPostal: "1000",
+      };
+      const resultado = await iniciarCheckout(payloadMock, items);
+      if (resultado.ok && resultado.checkoutUrl) {
+        window.location.href = resultado.checkoutUrl;
+      } else {
+        alert(resultado.mensaje || "Error al procesar el pago");
+      }
+    } catch (error) {
+      console.error("Error en checkout:", error);
+      alert("Ocurrió un error inesperado al procesar la compra.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const eliminarProducto = (productoId: string, varianteId: string) => {
     quitarItem(productoId, varianteId);
@@ -37,16 +66,6 @@ export function CarritoView() {
     }, 1800);
   };
 
-  const mensajeFinalizarCompra = encodeURIComponent(
-    [
-      "Hola Coral BJJ Studio, quiero finalizar mi compra:",
-      ...items.map(
-        (item) =>
-          `- ${item.nombre} (${item.variante}) x${item.cantidad} · ${precioARS(item.precioUnitario * item.cantidad)}`,
-      ),
-      `Total: ${precioARS(totalMonto)}`,
-    ].join("\n"),
-  );
 
   if (items.length === 0) {
     return (
@@ -181,10 +200,11 @@ export function CarritoView() {
         <div className="grid gap-2">
           <Button
             className="h-11"
-            onClick={() => window.open(`https://wa.me/?text=${mensajeFinalizarCompra}`, "_blank", "noopener,noreferrer")}
+            disabled={loading}
+            onClick={handleCheckout}
             type="button"
           >
-            Finalizar compra
+            {loading ? "Procesando..." : "Finalizar compra"}
           </Button>
 
           <Link

@@ -38,5 +38,6 @@ export async function iniciarCheckout(payload: CheckoutPayload, items: ItemCarri
     ok: true,
     mensaje: data.checkoutUrl ? `Checkout creado. URL: ${data.checkoutUrl}` : data.mensaje,
     referencia: data.referencia,
+    checkoutUrl: data.checkoutUrl,
   };
 }
