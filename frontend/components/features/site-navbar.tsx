@@ -1,17 +1,18 @@
 "use client";
 
-import { X } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+
+import { useCarritoStore } from "@/store/use-carrito-store";
 
 const LINKS_HOME = [
   { label: "Nosotros", href: "/nosotros" },
   { label: "Embajadores", href: "/embajadores" },
   { label: "Staff Coral", href: "/staff-coral" },
   { label: "Horarios", href: "/#horarios" },
-  { label: "Galería", href: "/galeria" },
+  { label: "Galería", href: "/#galeria" },
   { label: "Tienda", href: "/tienda" },
   { label: "Contacto", href: "/#formularios" },
 ];
@@ -21,9 +22,30 @@ export function SiteNavbar() {
   const esHome = pathname === "/";
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [colapsado, setColapsado] = useState(false);
+  const totalItems = useCarritoStore((state) =>
+    state.items.reduce((acc, item) => acc + item.cantidad, 0),
+  );
+
   const linksNavbar = esHome
     ? LINKS_HOME
     : [{ label: "Inicio", href: "/" }, ...LINKS_HOME];
+
+  const obtenerHrefLink = (link: { label: string; href: string }) => {
+    if (link.label === "Galería") {
+      return esHome ? "/#galeria" : "/?abrirGaleria=true#galeria";
+    }
+    return link.href;
+  };
+
+  const manejarClickLink = (link: { label: string; href: string }, evento: React.MouseEvent) => {
+    setMenuAbierto(false);
+    if (link.label === "Galería" && esHome) {
+      evento.preventDefault();
+      const el = document.getElementById("galeria");
+      el?.scrollIntoView({ behavior: "smooth" });
+      window.dispatchEvent(new CustomEvent("coral:abrir-galeria"));
+    }
+  };
 
   useEffect(() => {
     function alScrollear() {
@@ -74,7 +96,11 @@ export function SiteNavbar() {
           >
             {linksNavbar.map((link) => (
               <li key={link.label}>
-                <Link className="inline-flex items-center gap-2 transition-colors hover:text-white" href={link.href}>
+                <Link
+                  className="inline-flex items-center gap-2 transition-colors hover:text-white"
+                  href={obtenerHrefLink(link)}
+                  onClick={(evento) => manejarClickLink(link, evento)}
+                >
                   <span aria-hidden="true">|</span>
                   <span>{link.label}</span>
                   <span aria-hidden="true">|</span>
@@ -93,7 +119,13 @@ export function SiteNavbar() {
             type="button"
           >
             {menuAbierto ? (
-              <X className="h-9 w-9" />
+              <Image
+                alt="Cerrar menú"
+                className="h-16 w-16 object-contain"
+                height={64}
+                src="/Xhuesos.png"
+                width={64}
+              />
             ) : (
               <Image
                 alt="Menú"
@@ -105,31 +137,68 @@ export function SiteNavbar() {
             )}
           </button>
 
+          {/* Carrito en la barra superior: solo visible en desktop expandido cuando no se muestran los huesos */}
           <Link
             aria-label="Ir a carrito"
-            className="inline-flex shrink-0 transition-opacity hover:opacity-80"
+            className={`relative shrink-0 transition-opacity hover:opacity-80 ${
+              colapsado ? "hidden" : "hidden md:inline-flex"
+            }`}
             href="/carrito"
           >
-            <Image alt="Carrito" height={64} src="/icons/custom/coral_cart_skull@128.png" width={64} />
+            <Image
+              alt="Carrito"
+              className="h-16 w-16 object-contain"
+              height={64}
+              src="/icons/custom/coral_cart_skull@128.png"
+              width={64}
+            />
+            {totalItems > 0 ? (
+              <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#f2685d] px-1 text-[11px] font-bold text-white shadow-md">
+                {totalItems}
+              </span>
+            ) : null}
           </Link>
         </div>
       </nav>
 
       {menuAbierto ? (
-        <div className="ml-auto mr-4 mt-1 w-72 rounded-xl border border-white/10 bg-black/50 px-6 py-5 shadow-2xl shadow-black/40 backdrop-blur-xl md:mr-12">
-          <ul className="space-y-3 text-3xl font-titulos text-zinc-100">
+        <div className="ml-auto mr-4 mt-1 w-72 rounded-xl border border-white/10 bg-black/50 px-5 py-4 shadow-2xl shadow-black/40 backdrop-blur-xl md:mr-12">
+          <ul className="space-y-1 text-3xl font-titulos text-zinc-100">
             {linksNavbar.map((link) => (
               <li key={link.label}>
                 <Link
-                  className="block py-1 transition-colors hover:text-white"
-                  href={link.href}
-                  onClick={() => setMenuAbierto(false)}
+                  className="block rounded-lg border border-transparent px-3 py-1.5 transition-all duration-200 hover:border-white/15 hover:bg-white/[0.08] hover:text-white hover:backdrop-blur-sm active:bg-white/[0.14]"
+                  href={obtenerHrefLink(link)}
+                  onClick={(evento) => manejarClickLink(link, evento)}
                 >
                   {link.label}
                 </Link>
               </li>
             ))}
           </ul>
+
+          {/* Carrito integrado estéticamente al final del menú desplegable */}
+          <div className="mt-3 flex justify-center border-t border-white/10 pt-2.5">
+            <Link
+              aria-label="Ir a carrito"
+              className="group relative inline-flex items-center justify-center rounded-xl border border-transparent p-2 transition-all duration-200 hover:border-white/15 hover:bg-white/[0.08] hover:backdrop-blur-sm active:bg-white/[0.14]"
+              href="/carrito"
+              onClick={() => setMenuAbierto(false)}
+            >
+              <Image
+                alt="Carrito"
+                className="h-14 w-14 object-contain transition-transform duration-200 group-hover:scale-110 active:scale-95"
+                height={56}
+                src="/icons/custom/coral_cart_skull@128.png"
+                width={56}
+              />
+              {totalItems > 0 ? (
+                <span className="absolute right-0 top-0 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#f2685d] px-1 text-[11px] font-bold text-white shadow-md">
+                  {totalItems}
+                </span>
+              ) : null}
+            </Link>
+          </div>
         </div>
       ) : null}
     </header>
