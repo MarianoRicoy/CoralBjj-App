@@ -88,22 +88,28 @@ export function SiteNavbar() {
           />
         </Link>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4 lg:gap-6">
           <ul
-            className={`items-center gap-9 text-2xl font-titulos font-medium text-zinc-100 ${
+            className={`items-center gap-3 text-2xl font-titulos font-medium text-zinc-100 lg:gap-5 ${
               colapsado ? "hidden" : "hidden md:flex"
             }`}
           >
             {linksNavbar.map((link) => (
               <li key={link.label}>
                 <Link
-                  className="inline-flex items-center gap-2 transition-colors hover:text-white"
+                  className="group inline-flex items-center gap-2 rounded-xl border border-transparent px-3 py-1.5 transition-all duration-200 hover:border-white/20 hover:bg-white/[0.10] hover:text-white hover:backdrop-blur-md hover:shadow-lg hover:shadow-black/25 active:bg-white/[0.16]"
                   href={obtenerHrefLink(link)}
                   onClick={(evento) => manejarClickLink(link, evento)}
                 >
-                  <span aria-hidden="true">|</span>
-                  <span>{link.label}</span>
-                  <span aria-hidden="true">|</span>
+                  <span aria-hidden="true" className="text-zinc-400 drop-shadow-[0_1px_3px_rgba(0,0,0,0.85)] transition-colors group-hover:text-white/80">
+                    |
+                  </span>
+                  <span className="drop-shadow-[0_1px_3px_rgba(0,0,0,0.85)] transition-colors group-hover:text-white">
+                    {link.label}
+                  </span>
+                  <span aria-hidden="true" className="text-zinc-400 drop-shadow-[0_1px_3px_rgba(0,0,0,0.85)] transition-colors group-hover:text-white/80">
+                    |
+                  </span>
                 </Link>
               </li>
             ))}
@@ -140,14 +146,14 @@ export function SiteNavbar() {
           {/* Carrito en la barra superior: solo visible en desktop expandido cuando no se muestran los huesos */}
           <Link
             aria-label="Ir a carrito"
-            className={`relative shrink-0 transition-opacity hover:opacity-80 ${
+            className={`group relative shrink-0 rounded-xl border border-transparent p-2 transition-all duration-200 hover:border-white/20 hover:bg-white/[0.10] hover:backdrop-blur-md hover:shadow-lg hover:shadow-black/25 active:bg-white/[0.16] ${
               colapsado ? "hidden" : "hidden md:inline-flex"
             }`}
             href="/carrito"
           >
             <Image
               alt="Carrito"
-              className="h-16 w-16 object-contain"
+              className="h-16 w-16 object-contain transition-transform duration-200 group-hover:scale-105"
               height={64}
               src="/icons/custom/coral_cart_skull@128.png"
               width={64}
