@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { siteConfig } from "@/lib/site-config";
 
 export function SiteFooter() {
   return (
@@ -57,9 +58,34 @@ export function SiteFooter() {
           <section className="space-y-3 md:justify-self-center md:text-right">
             <h3 className="font-coralbold text-base tracking-[0.18em] text-[#f2685d] uppercase md:text-lg">Contacto</h3>
             <ul className="space-y-2 text-base text-zinc-100 md:text-lg">
-              <li>WhatsApp: +54 9 11 0000-0000</li>
-              <li>Email: hola@coralbjj.com</li>
-              <li>Instagram: @coralbjjstudio</li>
+              <li>
+                <a
+                  href={siteConfig.contact.whatsapp.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors hover:text-[#f2685d]"
+                >
+                  WhatsApp: {siteConfig.contact.whatsapp.display}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`mailto:${siteConfig.contact.email}`}
+                  className="transition-colors hover:text-[#f2685d]"
+                >
+                  Email: {siteConfig.contact.email}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={siteConfig.contact.instagram.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors hover:text-[#f2685d]"
+                >
+                  Instagram: {siteConfig.contact.instagram.handle}
+                </a>
+              </li>
             </ul>
             <Link
               className="inline-flex h-12 items-center justify-center rounded-md border border-white/70 bg-black/30 px-7 text-base font-tertiary font-medium tracking-[0.08em] text-zinc-100 uppercase transition-all duration-200 hover:-translate-y-0.5 hover:border-white hover:bg-white/10"

@@ -1,21 +1,26 @@
 import type { MetadataRoute } from "next";
+import { siteConfig } from "@/lib/site-config";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Coral BJJ Studio",
-    short_name: "Coral BJJ",
-    description:
-      "Academia premium de Brazilian Jiu-Jitsu con landing informativa, tienda online y experiencia optimizada.",
+    name: siteConfig.name,
+    short_name: siteConfig.shortName,
+    description: siteConfig.description,
     start_url: "/",
     display: "standalone",
     background_color: "#090909",
-    theme_color: "#f2f2f2",
+    theme_color: "#f2685d",
     lang: "es-AR",
     icons: [
       {
-        src: "/icons/custom/coral-mark.svg",
-        type: "image/svg+xml",
-        sizes: "any",
+        src: "/icon-dark.png",
+        sizes: "998x998",
+        type: "image/png",
+      },
+      {
+        src: "/icon-light.png",
+        sizes: "998x998",
+        type: "image/png",
       },
     ],
   };

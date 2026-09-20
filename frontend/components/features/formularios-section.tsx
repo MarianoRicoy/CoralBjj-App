@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { siteConfig } from "@/lib/site-config";
 
 const contactoSchema = z.object({
   nombre: z.string().min(2, "Ingresá tu nombre"),
@@ -56,10 +57,10 @@ export function FormulariosSection() {
                   Email
                 </p>
                 <a
-                  href="mailto:info@coralbjj.com"
+                  href={`mailto:${siteConfig.contact.email}`}
                   className="block text-base text-zinc-200 transition-colors hover:text-white"
                 >
-                  info@coralbjj.com
+                  {siteConfig.contact.email}
                 </a>
               </div>
 
@@ -68,12 +69,12 @@ export function FormulariosSection() {
                   WhatsApp
                 </p>
                 <a
-                  href="https://wa.me/541112345678"
+                  href={siteConfig.contact.whatsapp.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block text-base text-zinc-200 transition-colors hover:text-white"
                 >
-                  +54 11 1234 5678
+                  {siteConfig.contact.whatsapp.display}
                 </a>
               </div>
 
@@ -82,10 +83,10 @@ export function FormulariosSection() {
                   Ubicación
                 </p>
                 <p className="text-base text-zinc-200">
-                  Chapadmalal, Provincia de Buenos Aires
+                  {siteConfig.contact.location.address}
                 </p>
                 <a
-                  href="https://maps.google.com/?q=Chapadmalal,+Provincia+de+Buenos+Aires"
+                  href={siteConfig.contact.location.mapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 text-sm font-medium text-[#f2685d] transition-colors hover:text-[#ff766a]"
