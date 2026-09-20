@@ -1,7 +1,8 @@
 "use client";
 
+import { Dialog } from "@base-ui/react";
 import { X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { HORARIOS_SEMANALES } from "@/services/horarios.service";
 import type { BloqueHorario } from "@/types/horario";
@@ -41,6 +42,17 @@ function ListaBloques({ bloques, grande = false }: { bloques: BloqueHorario[]; g
             >
               {bloque.clase}
             </span>
+            {grande && (
+              <div className="mt-1 flex flex-wrap items-center gap-2.5 text-xs text-zinc-400">
+                <span className="font-medium tracking-wide">
+                  Instructor: <span className="text-zinc-200">{bloque.instructor}</span>
+                </span>
+                <span className="text-zinc-600">•</span>
+                <span className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wider text-zinc-300">
+                  {bloque.nivel}
+                </span>
+              </div>
+            )}
           </div>
         </div>
       ))}
@@ -55,26 +67,6 @@ export function HorariosGrid() {
   })).filter((grupo) => grupo.bloques.length > 0);
 
   const [diaSeleccionado, setDiaSeleccionado] = useState<GrupoDia | null>(null);
-
-  useEffect(() => {
-    if (!diaSeleccionado) {
-      return;
-    }
-
-    function alPresionar(evento: KeyboardEvent) {
-      if (evento.key === "Escape") {
-        setDiaSeleccionado(null);
-      }
-    }
-
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", alPresionar);
-
-    return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", alPresionar);
-    };
-  }, [diaSeleccionado]);
 
   return (
     <section aria-labelledby="horarios" className="space-y-12 py-10">
@@ -94,7 +86,7 @@ export function HorariosGrid() {
             type="button"
             onClick={() => setDiaSeleccionado(grupo)}
             aria-label={`Ver horarios de ${grupo.dia}`}
-            className="group relative cursor-pointer overflow-hidden rounded-[2rem] border border-white/10 bg-black/50 p-8 text-left shadow-2xl shadow-black/40 backdrop-blur-xl transition-all duration-500 hover:-translate-y-2 hover:border-white/20 hover:shadow-[#f2685d]/5"
+            className="group relative cursor-pointer overflow-hidden rounded-[2rem] border border-white/10 bg-black/50 p-8 text-left shadow-2xl shadow-black/40 backdrop-blur-xl transition-all duration-500 hover:border-white/20 hover:shadow-[#f2685d]/5 motion-safe:hover:-translate-y-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2685d]"
           >
             <div className="relative z-10 space-y-8">
               <p className="text-3xl font-primary text-white uppercase tracking-wider">{grupo.dia}</p>
@@ -104,34 +96,39 @@ export function HorariosGrid() {
         ))}
       </div>
 
-      {diaSeleccionado ? (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label={`Horarios de ${diaSeleccionado.dia}`}
-          onClick={() => setDiaSeleccionado(null)}
-          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
-        >
-          <div
-            onClick={(evento) => evento.stopPropagation()}
-            className="relative max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-[2rem] border border-white/10 bg-black/50 p-10 shadow-2xl shadow-black/40 backdrop-blur-xl"
-          >
-            <button
-              type="button"
-              onClick={() => setDiaSeleccionado(null)}
-              aria-label="Cerrar"
-              className="absolute right-6 top-6 text-white/80 transition-colors hover:text-white"
+      {/* Modal Accesible con Base UI */}
+      <Dialog.Root
+        open={diaSeleccionado !== null}
+        onOpenChange={(abierto) => {
+          if (!abierto) {
+            setDiaSeleccionado(null);
+          }
+        }}
+      >
+        <Dialog.Portal>
+          <Dialog.Backdrop className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm" />
+          <Dialog.Viewport className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+            <Dialog.Popup
+              aria-label={`Horarios de ${diaSeleccionado?.dia}`}
+              className="relative max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-[2rem] border border-white/10 bg-black/50 p-10 shadow-2xl shadow-black/40 backdrop-blur-xl outline-none focus-visible:outline-none"
             >
-              <X className="h-8 w-8" />
-            </button>
+              <Dialog.Close
+                aria-label="Cerrar ventana de horarios"
+                className="absolute right-6 top-6 rounded-full p-1 text-white/80 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2685d]"
+              >
+                <X className="h-8 w-8" />
+              </Dialog.Close>
 
-            <div className="space-y-8">
-              <p className="text-5xl font-primary text-white uppercase tracking-wider">{diaSeleccionado.dia}</p>
-              <ListaBloques bloques={diaSeleccionado.bloques} grande />
-            </div>
-          </div>
-        </div>
-      ) : null}
+              <div className="space-y-8">
+                <Dialog.Title className="text-5xl font-primary text-white uppercase tracking-wider">
+                  {diaSeleccionado?.dia}
+                </Dialog.Title>
+                {diaSeleccionado && <ListaBloques bloques={diaSeleccionado.bloques} grande />}
+              </div>
+            </Dialog.Popup>
+          </Dialog.Viewport>
+        </Dialog.Portal>
+      </Dialog.Root>
     </section>
   );
 }

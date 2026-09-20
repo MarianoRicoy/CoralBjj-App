@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 
@@ -45,16 +45,23 @@ const FOTOS_HOME = [
 
 export function HeroSection() {
   const [slideActivo, setSlideActivo] = useState(0);
+  const [pausado, setPausado] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
 
   const totalSlides = useMemo(() => FOTOS_HOME.length, []);
 
+  // Autoplay accesible: deshabilitado con reduced-motion o si el usuario hace hover/focus
   useEffect(() => {
+    if (shouldReduceMotion || pausado) {
+      return;
+    }
+
     const timer = window.setInterval(() => {
       setSlideActivo((prev) => (prev + 1) % totalSlides);
     }, 4500);
 
     return () => window.clearInterval(timer);
-  }, [totalSlides]);
+  }, [totalSlides, shouldReduceMotion, pausado]);
 
   function siguienteSlide() {
     setSlideActivo((prev) => (prev + 1) % totalSlides);
@@ -64,15 +71,39 @@ export function HeroSection() {
     setSlideActivo((prev) => (prev - 1 + totalSlides) % totalSlides);
   }
 
+  function alPresionarTeclas(evento: React.KeyboardEvent) {
+    if (evento.key === "ArrowLeft") {
+      evento.preventDefault();
+      anteriorSlide();
+    } else if (evento.key === "ArrowRight") {
+      evento.preventDefault();
+      siguienteSlide();
+    }
+  }
+
   return (
-    <section className="relative h-[100svh] w-full overflow-hidden">
-      <div className="absolute inset-0">
+    <section
+      aria-label="Galería destacada de Coral BJJ"
+      aria-roledescription="carrusel"
+      className="relative h-[100svh] w-full overflow-hidden focus-visible:outline-none"
+      onBlur={() => setPausado(false)}
+      onFocus={() => setPausado(true)}
+      onKeyDown={alPresionarTeclas}
+      onMouseEnter={() => setPausado(true)}
+      onMouseLeave={() => setPausado(false)}
+      tabIndex={0}
+    >
+      <div id="hero-carrusel-slides" aria-live="off" className="absolute inset-0">
         {FOTOS_HOME.map((foto, index) => (
           <div
             key={foto.src}
-            className={`absolute inset-0 transition-opacity duration-700 ${
-              slideActivo === index ? "opacity-100" : "opacity-0"
-            }`}
+            aria-hidden={slideActivo !== index}
+            aria-label={`Diapositiva ${index + 1} de ${totalSlides}`}
+            aria-roledescription="diapositiva"
+            role="group"
+            className={`absolute inset-0 ${
+              shouldReduceMotion ? "transition-none" : "transition-opacity duration-700"
+            } ${slideActivo === index ? "opacity-100" : "pointer-events-none opacity-0"}`}
           >
             <Image
               alt={foto.alt}
@@ -88,20 +119,22 @@ export function HeroSection() {
         ))}
       </div>
 
-      <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/20 to-black/10" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/20 to-black/10 pointer-events-none" />
 
       <div className="absolute right-4 bottom-4 z-20 flex items-center gap-2 md:right-6 md:bottom-6">
         <button
-          aria-label="Slide anterior"
-          className="rounded-full border border-white/30 bg-black/30 p-2 text-white transition-colors hover:bg-black/60"
+          aria-controls="hero-carrusel-slides"
+          aria-label="Diapositiva anterior"
+          className="rounded-full border border-white/30 bg-black/30 p-2 text-white transition-colors hover:bg-black/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2685d]"
           onClick={anteriorSlide}
           type="button"
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
         <button
-          aria-label="Slide siguiente"
-          className="rounded-full border border-white/30 bg-black/30 p-2 text-white transition-colors hover:bg-black/60"
+          aria-controls="hero-carrusel-slides"
+          aria-label="Diapositiva siguiente"
+          className="rounded-full border border-white/30 bg-black/30 p-2 text-white transition-colors hover:bg-black/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2685d]"
           onClick={siguienteSlide}
           type="button"
         >
@@ -110,9 +143,9 @@ export function HeroSection() {
       </div>
 
       <motion.div
-        className="relative z-10 flex h-[100svh] flex-col justify-end gap-5 p-8 md:p-14"
-        initial={{ opacity: 0, y: 24 }}
-        transition={{ duration: 0.7, ease: "easeOut" }}
+        className="relative z-10 flex h-[100svh] flex-col justify-end gap-5 p-8 md:p-14 pointer-events-none"
+        initial={shouldReduceMotion ? false : { opacity: 0, y: 24 }}
+        transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.7, ease: "easeOut" }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
       >
@@ -120,12 +153,19 @@ export function HeroSection() {
           Formamos atletas y personas con una metodología clara: disciplina, detalle y comunidad.
         </p>
 
-        <div className="mt-4 flex items-center gap-2">
+        <div
+          role="tablist"
+          aria-label="Diapositivas del carrusel"
+          className="mt-4 flex items-center gap-2 pointer-events-auto"
+        >
           {FOTOS_HOME.map((foto, index) => (
             <button
               key={foto.src}
-              aria-label={`Ir al slide ${index + 1}`}
-              className={`h-2.5 rounded-full transition-all ${
+              role="tab"
+              aria-selected={slideActivo === index}
+              aria-controls="hero-carrusel-slides"
+              aria-label={`Ir a la diapositiva ${index + 1} de ${totalSlides}`}
+              className={`h-2.5 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2685d] ${
                 slideActivo === index ? "w-7 bg-white" : "w-2.5 bg-white/50"
               }`}
               onClick={() => setSlideActivo(index)}

@@ -1,6 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { Dialog } from "@base-ui/react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Maximize2, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -14,6 +15,7 @@ export function GaleriaPro() {
   const [fotoSeleccionadaIndex, setFotoSeleccionadaIndex] = useState<number | null>(null);
   const [offset, setOffset] = useState(0);
   const [pausado, setPausado] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
 
   const fotoSeleccionada =
     fotoSeleccionadaIndex !== null ? FOTOS_GALERIA[fotoSeleccionadaIndex] : null;
@@ -43,38 +45,35 @@ export function GaleriaPro() {
     };
   }, []);
 
-  // Control del modal con teclado y bloqueo de scroll
+  // Navegación por flechas del teclado en el modal
   useEffect(() => {
     if (fotoSeleccionadaIndex === null) {
       return;
     }
 
-    function alPresionar(evento: KeyboardEvent) {
-      if (evento.key === "Escape") {
-        setFotoSeleccionadaIndex(null);
-      } else if (evento.key === "ArrowRight") {
+    function alPresionarFlechas(evento: KeyboardEvent) {
+      if (evento.key === "ArrowRight") {
+        evento.preventDefault();
         setFotoSeleccionadaIndex((prev) =>
           prev !== null ? (prev + 1) % FOTOS_GALERIA.length : null,
         );
       } else if (evento.key === "ArrowLeft") {
+        evento.preventDefault();
         setFotoSeleccionadaIndex((prev) =>
           prev !== null ? (prev - 1 + FOTOS_GALERIA.length) % FOTOS_GALERIA.length : null,
         );
       }
     }
 
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", alPresionar);
-
+    window.addEventListener("keydown", alPresionarFlechas);
     return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", alPresionar);
+      window.removeEventListener("keydown", alPresionarFlechas);
     };
   }, [fotoSeleccionadaIndex]);
 
-  // Rotación suave automática de las 6 fotos cada 5 segundos
+  // Rotación suave automática de las 6 fotos (deshabilitada si reduced motion está activo o si está pausado)
   useEffect(() => {
-    if (pausado || fotoSeleccionadaIndex !== null || FOTOS_GALERIA.length <= 1) {
+    if (shouldReduceMotion || pausado || fotoSeleccionadaIndex !== null || FOTOS_GALERIA.length <= 1) {
       return;
     }
 
@@ -83,7 +82,7 @@ export function GaleriaPro() {
     }, INTERVALO_ROTACION_MS);
 
     return () => clearInterval(timer);
-  }, [pausado, fotoSeleccionadaIndex]);
+  }, [shouldReduceMotion, pausado, fotoSeleccionadaIndex]);
 
   const irFotoAnterior = () => {
     setFotoSeleccionadaIndex((prev) =>
@@ -136,7 +135,7 @@ export function GaleriaPro() {
             type="button"
             onClick={rotarAnterior}
             aria-label="Rotar fotos anteriores"
-            className="rounded-full border border-white/10 bg-black/40 p-2 text-zinc-300 backdrop-blur-sm transition-all hover:border-white/30 hover:bg-white/10 hover:text-white"
+            className="rounded-full border border-white/10 bg-black/40 p-2 text-zinc-300 backdrop-blur-sm transition-all hover:border-white/30 hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2685d]"
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
@@ -144,7 +143,7 @@ export function GaleriaPro() {
             type="button"
             onClick={rotarSiguiente}
             aria-label="Rotar fotos siguientes"
-            className="rounded-full border border-white/10 bg-black/40 p-2 text-zinc-300 backdrop-blur-sm transition-all hover:border-white/30 hover:bg-white/10 hover:text-white"
+            className="rounded-full border border-white/10 bg-black/40 p-2 text-zinc-300 backdrop-blur-sm transition-all hover:border-white/30 hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2685d]"
           >
             <ChevronRight className="h-4 w-4" />
           </button>
@@ -165,24 +164,26 @@ export function GaleriaPro() {
             className={`group relative cursor-pointer overflow-hidden rounded-2xl border border-white/10 bg-black/40 text-left transition-all duration-300 hover:border-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2685d] ${
               slot === 0 || slot === 3 ? "col-span-2" : "col-span-1"
             }`}
-            initial={{ opacity: 0, y: 18 }}
-            transition={{ delay: slot * 0.08, duration: 0.5 }}
+            initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
+            transition={shouldReduceMotion ? { duration: 0 } : { delay: slot * 0.08, duration: 0.5 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
             <AnimatePresence mode="wait">
               <motion.div
                 key={foto.id}
-                initial={{ opacity: 0 }}
+                initial={shouldReduceMotion ? false : { opacity: 0 }}
                 animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.6 }}
+                exit={shouldReduceMotion ? undefined : { opacity: 0 }}
+                transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.6 }}
                 className="relative h-full w-full"
               >
                 <Image
                   alt={foto.alt}
                   blurDataURL={PLACEHOLDER_BASE64}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  className={`h-full w-full object-cover ${
+                    shouldReduceMotion ? "" : "transition-transform duration-500 group-hover:scale-105"
+                  }`}
                   fill
                   placeholder="blur"
                   sizes="(max-width: 768px) 50vw, 25vw"
@@ -201,105 +202,109 @@ export function GaleriaPro() {
         ))}
       </div>
 
-      {/* Modal Lightbox */}
-      {fotoSeleccionada ? (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label={fotoSeleccionada.alt}
-          onClick={() => setFotoSeleccionadaIndex(null)}
-          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
-        >
-          <div
-            onClick={(evento) => evento.stopPropagation()}
-            className="relative flex max-h-[90vh] w-full max-w-4xl flex-col items-center gap-6 overflow-y-auto rounded-[2rem] border border-white/10 bg-black/70 p-6 shadow-2xl shadow-black/60 backdrop-blur-xl md:p-8"
-          >
-            {/* Botón cerrar */}
-            <button
-              type="button"
-              onClick={() => setFotoSeleccionadaIndex(null)}
-              aria-label="Cerrar vista previa"
-              className="absolute right-6 top-6 z-20 rounded-full border border-white/10 bg-black/60 p-2 text-white/80 backdrop-blur-md transition-colors hover:bg-white/10 hover:text-white"
+      {/* Modal Lightbox Accesible con Base UI */}
+      <Dialog.Root
+        open={fotoSeleccionada !== null}
+        onOpenChange={(abierto) => {
+          if (!abierto) {
+            setFotoSeleccionadaIndex(null);
+          }
+        }}
+      >
+        <Dialog.Portal>
+          <Dialog.Backdrop className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm" />
+          <Dialog.Viewport className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+            <Dialog.Popup
+              aria-label={fotoSeleccionada?.alt}
+              className="relative flex max-h-[90vh] w-full max-w-4xl flex-col items-center gap-6 overflow-y-auto rounded-[2rem] border border-white/10 bg-black/70 p-6 shadow-2xl shadow-black/60 backdrop-blur-xl md:p-8 outline-none focus-visible:outline-none"
             >
-              <X className="h-6 w-6 md:h-7 md:w-7" />
-            </button>
-
-            {/* Contenedor de la foto con controles de navegación */}
-            <div className="relative flex aspect-[4/3] max-h-[62vh] w-full items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-black/40">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={fotoSeleccionada.id}
-                  initial={{ opacity: 0, scale: 0.98 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.98 }}
-                  transition={{ duration: 0.25 }}
-                  className="relative h-full w-full"
-                >
-                  <Image
-                    alt={fotoSeleccionada.alt}
-                    blurDataURL={PLACEHOLDER_BASE64}
-                    className="h-full w-full object-contain"
-                    fill
-                    placeholder="blur"
-                    priority
-                    sizes="(max-width: 1024px) 95vw, 1000px"
-                    src={fotoSeleccionada.src}
-                  />
-                </motion.div>
-              </AnimatePresence>
-
-              {/* Botón Anterior */}
-              <button
-                type="button"
-                onClick={irFotoAnterior}
-                aria-label="Foto anterior"
-                className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full border border-white/10 bg-black/60 p-2 text-white/80 backdrop-blur-md transition-all hover:scale-110 hover:bg-black/90 hover:text-white"
+              {/* Botón cerrar accesible */}
+              <Dialog.Close
+                aria-label="Cerrar vista previa"
+                className="absolute right-6 top-6 z-20 rounded-full border border-white/10 bg-black/60 p-2 text-white/80 backdrop-blur-md transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2685d]"
               >
-                <ChevronLeft className="h-6 w-6" />
-              </button>
+                <X className="h-6 w-6 md:h-7 md:w-7" />
+              </Dialog.Close>
 
-              {/* Botón Siguiente */}
-              <button
-                type="button"
-                onClick={irFotoSiguiente}
-                aria-label="Foto siguiente"
-                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-white/10 bg-black/60 p-2 text-white/80 backdrop-blur-md transition-all hover:scale-110 hover:bg-black/90 hover:text-white"
-              >
-                <ChevronRight className="h-6 w-6" />
-              </button>
-            </div>
+              {/* Contenedor de la foto con controles de navegación */}
+              <div className="relative flex aspect-[4/3] max-h-[62vh] w-full items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-black/40">
+                <AnimatePresence mode="wait">
+                  {fotoSeleccionada && (
+                    <motion.div
+                      key={fotoSeleccionada.id}
+                      initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.98 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={shouldReduceMotion ? undefined : { opacity: 0, scale: 0.98 }}
+                      transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.25 }}
+                      className="relative h-full w-full"
+                    >
+                      <Image
+                        alt={fotoSeleccionada.alt}
+                        blurDataURL={PLACEHOLDER_BASE64}
+                        className="h-full w-full object-contain"
+                        fill
+                        placeholder="blur"
+                        priority
+                        sizes="(max-width: 1024px) 95vw, 1000px"
+                        src={fotoSeleccionada.src}
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
-            {/* Pie del modal: Información y controles de navegación rápida */}
-            <div className="flex w-full flex-col items-center justify-between gap-3 text-center sm:flex-row sm:text-left">
-              <div className="space-y-1">
-                <p className="font-primary text-xl uppercase tracking-wider text-white md:text-2xl">
-                  {fotoSeleccionada.alt}
-                </p>
-                <p className="text-xs uppercase tracking-widest text-zinc-400">
-                  Foto {(fotoSeleccionadaIndex ?? 0) + 1} de {FOTOS_GALERIA.length} · Coral BJJ Studio
-                </p>
-              </div>
-
-              <div className="flex items-center gap-3">
+                {/* Botón Anterior */}
                 <button
                   type="button"
                   onClick={irFotoAnterior}
-                  className="rounded-full border border-white/20 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-zinc-300 transition-colors hover:bg-white/10 hover:text-white"
+                  aria-label="Foto anterior"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full border border-white/10 bg-black/60 p-2 text-white/80 backdrop-blur-md transition-all hover:scale-110 hover:bg-black/90 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2685d]"
                 >
-                  Anterior
+                  <ChevronLeft className="h-6 w-6" />
                 </button>
+
+                {/* Botón Siguiente */}
                 <button
                   type="button"
                   onClick={irFotoSiguiente}
-                  className="rounded-full border border-[#f2685d]/60 bg-[#f2685d]/20 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition-colors hover:bg-[#f2685d] hover:text-white"
+                  aria-label="Foto siguiente"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-white/10 bg-black/60 p-2 text-white/80 backdrop-blur-md transition-all hover:scale-110 hover:bg-black/90 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2685d]"
                 >
-                  Siguiente
+                  <ChevronRight className="h-6 w-6" />
                 </button>
               </div>
-            </div>
-          </div>
-        </div>
-      ) : null}
+
+              {/* Pie del modal: Información y controles de navegación rápida */}
+              <div className="flex w-full flex-col items-center justify-between gap-3 text-center sm:flex-row sm:text-left">
+                <div className="space-y-1">
+                  <Dialog.Title className="font-primary text-xl uppercase tracking-wider text-white md:text-2xl">
+                    {fotoSeleccionada?.alt}
+                  </Dialog.Title>
+                  <Dialog.Description className="text-xs uppercase tracking-widest text-zinc-400">
+                    Foto {(fotoSeleccionadaIndex ?? 0) + 1} de {FOTOS_GALERIA.length} · Coral BJJ Studio
+                  </Dialog.Description>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={irFotoAnterior}
+                    className="rounded-full border border-white/20 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-zinc-300 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2685d]"
+                  >
+                    Anterior
+                  </button>
+                  <button
+                    type="button"
+                    onClick={irFotoSiguiente}
+                    className="rounded-full border border-[#f2685d]/60 bg-[#f2685d]/20 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition-colors hover:bg-[#f2685d] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2685d]"
+                  >
+                    Siguiente
+                  </button>
+                </div>
+              </div>
+            </Dialog.Popup>
+          </Dialog.Viewport>
+        </Dialog.Portal>
+      </Dialog.Root>
     </section>
   );
 }
