@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { useCarritoStore } from "@/store/use-carrito-store";
+import { useCarrito } from "@/hooks/use-carrito";
 
 const LINKS_HOME = [
   { label: "Nosotros", href: "/nosotros" },
@@ -22,9 +22,7 @@ export function SiteNavbar() {
   const esHome = pathname === "/";
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [colapsado, setColapsado] = useState(false);
-  const totalItems = useCarritoStore((state) =>
-    state.items.reduce((acc, item) => acc + item.cantidad, 0),
-  );
+  const { totalItems } = useCarrito();
 
   const linksNavbar = esHome
     ? LINKS_HOME

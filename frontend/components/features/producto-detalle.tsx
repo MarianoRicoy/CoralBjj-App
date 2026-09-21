@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { useCarrito } from "@/hooks/use-carrito";
-import { precioARS } from "@/lib/tienda-productos";
+import { precioARS } from "@/services/productos.service";
 import type { Producto } from "@/types/producto";
 
 type ProductoDetalleProps = {
@@ -14,7 +14,9 @@ type ProductoDetalleProps = {
 
 export function ProductoDetalle({ producto }: ProductoDetalleProps) {
   const { agregarItem } = useCarrito();
-  const [varianteIdSeleccionada, setVarianteIdSeleccionada] = useState(producto.variantes[0]?.id ?? "");
+  const [varianteIdSeleccionada, setVarianteIdSeleccionada] = useState(
+    producto.variantes[0]?.id ?? "",
+  );
   const [mensajeAgregadoVisible, setMensajeAgregadoVisible] = useState(false);
 
   const varianteSeleccionada = useMemo(
@@ -22,12 +24,38 @@ export function ProductoDetalle({ producto }: ProductoDetalleProps) {
     [producto.variantes, varianteIdSeleccionada],
   );
 
+  const stockDisponible = varianteSeleccionada?.stock ?? 0;
+  const sinStock = stockDisponible <= 0 || producto.stockTotal <= 0;
   const precioActual = varianteSeleccionada?.precio ?? producto.precioBase;
+
+  const manejarAgregar = () => {
+    if (!varianteIdSeleccionada || sinStock) {
+      return;
+    }
+
+    agregarItem(producto, varianteIdSeleccionada);
+    setMensajeAgregadoVisible(true);
+
+    setTimeout(() => {
+      setMensajeAgregadoVisible(false);
+    }, 1800);
+  };
 
   return (
     <aside className="space-y-6 rounded-2xl border border-white/10 bg-zinc-900/70 p-5 md:p-6">
       <div className="space-y-2">
-        <p className="text-sm tracking-[0.16em] text-zinc-400 uppercase">{producto.categoria}</p>
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-sm tracking-[0.16em] text-zinc-400 uppercase">{producto.categoria}</p>
+          {sinStock ? (
+            <span className="rounded-full border border-red-500/30 bg-red-500/20 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider text-red-300">
+              Agotado
+            </span>
+          ) : (
+            <span className="rounded-full border border-emerald-500/30 bg-emerald-500/15 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider text-emerald-300">
+              En stock
+            </span>
+          )}
+        </div>
         <h1 className="text-3xl leading-tight font-primary text-white md:text-5xl">{producto.nombre}</h1>
       </div>
 
@@ -51,7 +79,9 @@ export function ProductoDetalle({ producto }: ProductoDetalleProps) {
           >
             {producto.variantes.map((variante) => (
               <option key={variante.id} value={variante.id}>
-                {`${variante.nombre}: ${variante.valor} · Stock ${variante.stock}`}
+                {`${variante.nombre}: ${variante.valor} · ${
+                  variante.stock > 0 ? `Stock: ${variante.stock}` : "Agotado"
+                }`}
               </option>
             ))}
           </select>
@@ -60,16 +90,8 @@ export function ProductoDetalle({ producto }: ProductoDetalleProps) {
 
       <Button
         className="w-full gap-2"
-        onClick={() => {
-          if (varianteIdSeleccionada) {
-            agregarItem(producto, varianteIdSeleccionada);
-            setMensajeAgregadoVisible(true);
-
-            setTimeout(() => {
-              setMensajeAgregadoVisible(false);
-            }, 1800);
-          }
-        }}
+        disabled={sinStock || !varianteIdSeleccionada}
+        onClick={manejarAgregar}
         type="button"
       >
         <Image
@@ -79,7 +101,7 @@ export function ProductoDetalle({ producto }: ProductoDetalleProps) {
           src="/icons/custom/coral_cart_skull@128.png"
           width={128}
         />
-        Añadir al carrito
+        {sinStock ? "Sin stock disponible" : "Añadir al carrito"}
       </Button>
 
       {mensajeAgregadoVisible ? (

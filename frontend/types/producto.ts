@@ -30,4 +30,7 @@ export interface ItemCarrito {
   precioUnitario: number;
   cantidad: number;
   imagen: string;
+  stockDisponible?: number;
+  noDisponible?: boolean;
+  motivoNoDisponible?: string;
 }

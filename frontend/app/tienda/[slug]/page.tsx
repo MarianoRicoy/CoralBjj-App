@@ -5,7 +5,9 @@ import { notFound } from "next/navigation";
 
 import { ProductoDetalle } from "@/components/features/producto-detalle";
 import { PLACEHOLDER_BASE64 } from "@/lib/media";
-import { obtenerProductoTiendaPorSlug, obtenerProductosTienda } from "@/lib/tienda-productos";
+import { obtenerProductoPorSlugDesdeApi } from "@/services/productos.service";
+
+export const dynamic = "force-dynamic";
 
 type ProductoPageParams = {
   slug: string;
@@ -15,30 +17,37 @@ type ProductoPageProps = {
   params: Promise<ProductoPageParams>;
 };
 
-export async function generateStaticParams(): Promise<ProductoPageParams[]> {
-  const productos = await obtenerProductosTienda();
-  return productos.map((producto) => ({ slug: producto.slug }));
-}
-
 export async function generateMetadata({ params }: ProductoPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const producto = await obtenerProductoTiendaPorSlug(slug);
+  try {
+    const producto = await obtenerProductoPorSlugDesdeApi(slug);
 
-  if (!producto) {
+    if (!producto) {
+      return {
+        title: "Producto no encontrado",
+      };
+    }
+
     return {
-      title: "Producto",
+      title: `${producto.nombre} | Tienda Coral BJJ`,
+      description: producto.descripcion,
+    };
+  } catch {
+    return {
+      title: "Tienda Coral BJJ",
     };
   }
-
-  return {
-    title: producto.nombre,
-    description: producto.descripcion,
-  };
 }
 
 export default async function ProductoPage({ params }: ProductoPageProps) {
   const { slug } = await params;
-  const producto = await obtenerProductoTiendaPorSlug(slug);
+  let producto = null;
+
+  try {
+    producto = await obtenerProductoPorSlugDesdeApi(slug);
+  } catch {
+    producto = null;
+  }
 
   if (!producto) {
     notFound();
@@ -46,7 +55,10 @@ export default async function ProductoPage({ params }: ProductoPageProps) {
 
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-8 px-4 py-8 md:px-8 md:py-12">
-      <Link className="inline-flex text-sm text-zinc-300 transition-colors hover:text-white" href="/tienda">
+      <Link
+        className="inline-flex text-sm text-zinc-300 transition-colors hover:text-white"
+        href="/tienda"
+      >
         ← Volver a tienda
       </Link>
 

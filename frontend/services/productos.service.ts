@@ -2,69 +2,19 @@ import type { Producto } from "@/types/producto";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:4000";
 
-const PRODUCTOS_MOCK: Producto[] = [
-  {
-    id: "gi-coral-pro",
-    slug: "gi-coral-pro",
-    nombre: "Kimono Coral Pro",
-    descripcion: "Kimono premium para entrenamiento intenso y competencia.",
-    precioBase: 169000,
-    moneda: "ARS",
-    stockTotal: 18,
-    imagen:
-      "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1200&q=80",
-    categoria: "indumentaria",
-    destacado: true,
-    variantes: [
-      { id: "gcp-a1-blanco", nombre: "Talle", valor: "A1", stock: 7, precio: 169000 },
-      { id: "gcp-a2-blanco", nombre: "Talle", valor: "A2", stock: 6, precio: 169000 },
-      { id: "gcp-a3-blanco", nombre: "Talle", valor: "A3", stock: 5, precio: 174000 },
-    ],
-  },
-  {
-    id: "rashguard-coral",
-    slug: "rashguard-coral",
-    nombre: "Rashguard Studio",
-    descripcion: "Compresión técnica para no-gi con secado rápido.",
-    precioBase: 69000,
-    moneda: "ARS",
-    stockTotal: 32,
-    imagen:
-      "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1200&q=80",
-    categoria: "indumentaria",
-    variantes: [
-      { id: "rgs-s", nombre: "Talle", valor: "S", stock: 12, precio: 69000 },
-      { id: "rgs-m", nombre: "Talle", valor: "M", stock: 11, precio: 69000 },
-      { id: "rgs-l", nombre: "Talle", valor: "L", stock: 9, precio: 69000 },
-    ],
-  },
-  {
-    id: "cinturon-coral",
-    slug: "cinturon-coral",
-    nombre: "Cinturón Coral Signature",
-    descripcion: "Tejido reforzado para máxima durabilidad.",
-    precioBase: 39000,
-    moneda: "ARS",
-    stockTotal: 40,
-    imagen:
-      "https://images.unsplash.com/photo-1547347298-4074fc3086f0?auto=format&fit=crop&w=1200&q=80",
-    categoria: "accesorios",
-    variantes: [
-      { id: "cc-azul", nombre: "Color", valor: "Azul", stock: 14, precio: 39000 },
-      { id: "cc-marron", nombre: "Color", valor: "Marrón", stock: 13, precio: 39000 },
-      { id: "cc-negro", nombre: "Color", valor: "Negro", stock: 13, precio: 42000 },
-    ],
-  },
-];
-
-export function obtenerProductos(): Producto[] {
-  return PRODUCTOS_MOCK;
+export class ApiError extends Error {
+  codigo?: number;
+  constructor(mensaje: string, codigo?: number) {
+    super(mensaje);
+    this.name = "ApiError";
+    this.codigo = codigo;
+  }
 }
 
-export function obtenerProductoPorId(productoId: string): Producto | undefined {
-  return PRODUCTOS_MOCK.find((producto) => producto.id === productoId);
-}
-
+/**
+ * Consulta la lista de productos transaccionables desde el backend API.
+ * El backend es la única fuente de verdad: no recurre silenciosamente a mocks.
+ */
 export async function obtenerProductosDesdeApi(): Promise<Producto[]> {
   try {
     const respuesta = await fetch(`${API_BASE_URL}/api/productos`, {
@@ -72,15 +22,74 @@ export async function obtenerProductosDesdeApi(): Promise<Producto[]> {
       headers: {
         "Content-Type": "application/json",
       },
+      cache: "no-store",
     });
 
     if (!respuesta.ok) {
-      return PRODUCTOS_MOCK;
+      throw new ApiError(
+        `Error del servidor al obtener productos (${respuesta.status})`,
+        respuesta.status,
+      );
     }
 
     const data = (await respuesta.json()) as Producto[];
-    return data.length ? data : PRODUCTOS_MOCK;
-  } catch {
-    return PRODUCTOS_MOCK;
+    return Array.isArray(data) ? data : [];
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw new ApiError(
+      "No se pudo establecer conexión con el servidor de la tienda.",
+      503,
+    );
   }
+}
+
+/**
+ * Consulta un producto por su slug desde el backend API.
+ * Si el producto no existe, retorna null (404).
+ */
+export async function obtenerProductoPorSlugDesdeApi(slug: string): Promise<Producto | null> {
+  try {
+    const respuesta = await fetch(`${API_BASE_URL}/api/productos/slug/${encodeURIComponent(slug)}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+    });
+
+    if (respuesta.status === 404) {
+      return null;
+    }
+
+    if (!respuesta.ok) {
+      throw new ApiError(
+        `Error del servidor al obtener el producto (${respuesta.status})`,
+        respuesta.status,
+      );
+    }
+
+    const data = (await respuesta.json()) as Producto;
+    return data;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw new ApiError(
+      "No se pudo conectar con el servidor para obtener el detalle del producto.",
+      503,
+    );
+  }
+}
+
+/**
+ * Formatea valores numéricos a moneda de curso legal argentina (ARS).
+ */
+export function precioARS(valor: number): string {
+  return new Intl.NumberFormat("es-AR", {
+    style: "currency",
+    currency: "ARS",
+    maximumFractionDigits: 0,
+  }).format(valor);
 }

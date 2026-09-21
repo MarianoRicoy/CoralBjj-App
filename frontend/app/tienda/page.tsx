@@ -1,14 +1,27 @@
 import type { Metadata } from "next";
 import { TiendaCatalogoGrid } from "@/components/features/tienda-catalogo-grid";
-import { obtenerProductosTienda } from "@/lib/tienda-productos";
+import { obtenerProductosDesdeApi } from "@/services/productos.service";
+import type { Producto } from "@/types/producto";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Tienda",
-  description: "Tienda oficial de accesorios Coral BJJ Studio.",
+  description: "Tienda oficial de indumentaria, accesorios y equipamiento Coral BJJ Studio.",
 };
 
 export default async function TiendaPage() {
-  const productos = await obtenerProductosTienda();
+  let productos: Producto[] = [];
+  let error: string | null = null;
+
+  try {
+    productos = await obtenerProductosDesdeApi();
+  } catch (err) {
+    error =
+      err instanceof Error
+        ? err.message
+        : "No se pudo conectar con el servidor de la tienda.";
+  }
 
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-8 px-4 py-8 md:px-8 md:py-12">
@@ -17,14 +30,14 @@ export default async function TiendaPage() {
           Tienda oficial
         </p>
         <h1 className="text-4xl leading-tight font-primary text-white md:text-6xl">
-          Accesorios Coral BJJ Studio.
+          Colección Coral BJJ Studio.
         </h1>
         <p className="max-w-3xl text-base text-zinc-300 md:text-lg">
-          Artículos seleccionados para entrenamiento, estilo y rendimiento dentro y fuera del tatami.
+          Indumentaria, accesorios y equipamiento técnico para entrenamiento y rendimiento dentro y fuera del tatami.
         </p>
       </section>
 
-      <TiendaCatalogoGrid productos={productos} />
+      <TiendaCatalogoGrid error={error} productos={productos} />
     </main>
   );
 }

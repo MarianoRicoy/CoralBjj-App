@@ -1,8 +1,8 @@
 import type { MetadataRoute } from "next";
-import { CATALOGO_TIENDA } from "@/lib/tienda-catalogo";
 import { siteConfig } from "@/lib/site-config";
+import { obtenerProductosDesdeApi } from "@/services/productos.service";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = siteConfig.baseUrl.replace(/\/+$/, "");
 
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -38,7 +38,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  const productRoutes: MetadataRoute.Sitemap = CATALOGO_TIENDA.map((producto) => ({
+  let productos: Array<{ slug: string }> = [];
+  try {
+    productos = await obtenerProductosDesdeApi();
+  } catch {
+    // Si la API está temporalmente inaccesible en build time, sitemap se genera con rutas estáticas
+    productos = [];
+  }
+
+  const productRoutes: MetadataRoute.Sitemap = productos.map((producto) => ({
     url: `${baseUrl}/tienda/${producto.slug}`,
     lastModified: new Date(),
     changeFrequency: "weekly",

@@ -22,6 +22,26 @@ productosRouter.get("/", async (_req: Request, res: Response) => {
   }
 });
 
+productosRouter.get("/slug/:slug", async (req: Request, res: Response) => {
+  try {
+    const producto = await appDataSource.getRepository(ProductoEntity).findOne({
+      where: { slug: req.params.slug },
+      relations: { variantes: true },
+    });
+
+    if (!producto) {
+      return res.status(404).json({ mensaje: "Producto no encontrado." });
+    }
+
+    return res.status(200).json(producto);
+  } catch (error) {
+    return res.status(500).json({
+      mensaje: "No se pudo obtener el producto por slug.",
+      detalle: error instanceof Error ? error.message : "Error desconocido",
+    });
+  }
+});
+
 productosRouter.get("/:id", async (req: Request, res: Response) => {
   try {
     const producto = await appDataSource.getRepository(ProductoEntity).findOne({
