@@ -86,13 +86,25 @@ export function SiteFooter() {
                   Instagram: {siteConfig.contact.instagram.handle}
                 </a>
               </li>
+              <li>
+                <a
+                  href={siteConfig.contact.location.mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors hover:text-[#f2685d]"
+                >
+                  {siteConfig.contact.location.address}
+                </a>
+              </li>
             </ul>
-            <Link
+            <a
+              href={siteConfig.contact.whatsapp.reservarClaseUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex h-12 items-center justify-center rounded-md border border-white/70 bg-black/30 px-7 text-base font-tertiary font-medium tracking-[0.08em] text-zinc-100 uppercase transition-all duration-200 hover:-translate-y-0.5 hover:border-white hover:bg-white/10"
-              href="/#formularios"
             >
               Reservar clase
-            </Link>
+            </a>
           </section>
         </div>
 
