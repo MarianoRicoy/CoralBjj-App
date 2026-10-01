@@ -157,3 +157,12 @@ body {
     animation: none;
   }
 }
+
+/* Intro de inicio de sesión de Coral (anti-flash) */
+#coral-brand-intro {
+  display: none;
+}
+
+html.coral-intro-active #coral-brand-intro {
+  display: flex !important;
+}

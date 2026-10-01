@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 
+import { BrandIntro } from "@/components/features/brand-intro";
 import { CoralMarquee } from "@/components/features/coral-marquee";
 import { SiteFooter } from "@/components/features/site-footer";
 import { SiteNavbar } from "@/components/features/site-navbar";
@@ -19,6 +20,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
 
   return (
     <>
+      <BrandIntro />
       <SiteNavbar />
       {esHome ? children : <div className="pt-32 md:pt-40">{children}</div>}
       {esHome ? <CoralMarquee /> : null}

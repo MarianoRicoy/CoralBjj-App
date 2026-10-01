@@ -57,9 +57,24 @@ export default function RootLayout({
   return (
     <html
       lang="es-AR"
+      suppressHydrationWarning
       className={`${coralPrimary.variable} ${coralSecondary.variable} ${coralTertiary.variable} ${coralBold.variable} ${coralTitulos.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-secondary">
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var p = new URLSearchParams(window.location.search);
+                var isDev = ${process.env.NODE_ENV !== "production"};
+                var force = isDev && p.get('intro') === 'true';
+                if (force || !sessionStorage.getItem('coral_intro_vista')) {
+                  document.documentElement.classList.add('coral-intro-active');
+                }
+              } catch (e) {}
+            `,
+          }}
+        />
         <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
